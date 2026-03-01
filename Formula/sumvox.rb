@@ -1,31 +1,40 @@
 class Sumvox < Formula
   desc "Intelligent voice notifications for AI coding tools"
   homepage "https://github.com/musingfox/sumvox"
-  url "https://github.com/musingfox/sumvox/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "6e8de85f673ca5072f37cadf20518edc7d4835e866cda6f68476b63d132d7807"
+  version "1.2.0"
   license "MIT"
-  version "1.0.0"
 
-  depends_on "rust" => :build
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://github.com/musingfox/sumvox/releases/download/v1.2.0/sumvox-macos-aarch64.tar.gz"
+      sha256 "a81a0286fcedd2c109aa7643c59b611c7a7183c6d50cd65dbc0a71b39e3d1857"
+    else
+      url "https://github.com/musingfox/sumvox/releases/download/v1.2.0/sumvox-macos-x86_64.tar.gz"
+      sha256 "03a10dc8da3df27bcbefe98c562609e8dd52df3668468cddf9ea56a8d0f42f13"
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.arm?
+      url "https://github.com/musingfox/sumvox/releases/download/v1.2.0/sumvox-linux-aarch64.tar.gz"
+      sha256 "36f7e677920280b61e2c68242bd24f8516a4be6f1ebb7cffd5c697b354e2260c"
+    else
+      url "https://github.com/musingfox/sumvox/releases/download/v1.2.0/sumvox-linux-x86_64.tar.gz"
+      sha256 "655203239e99dd079557d8a95b99e9d9430615a9eba8d6b38f7c706c47ce0a46"
+    end
+  end
 
   def install
-    system "cargo", "build", "--release"
-    bin.install "target/release/sumvox"
-
-    # Install documentation
-    doc.install "README.md"
-    doc.install "QUICKSTART.md"
-    doc.install "config/recommended.yaml"
+    bin.install "sumvox"
   end
 
   def post_install
-    # Initialize config if it doesn't exist
     system bin/"sumvox", "init"
   end
 
   def caveats
     <<~EOS
-      SumVox has been installed! 🎉
+      SumVox has been installed!
 
       Next steps:
       1. Edit config file and set your API keys:
@@ -50,8 +59,7 @@ class Sumvox < Formula
          }
 
       Config: ~/.config/sumvox/config.yaml
-      Quick Start: #{doc}/QUICKSTART.md
-      Full Guide: #{doc}/README.md
+      Docs: https://github.com/musingfox/sumvox
     EOS
   end
 
